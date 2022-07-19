@@ -1,8 +1,8 @@
-const chai = require('chai')
-const expect = chai.expect
+const { expect } = require('chai')
 
 const { Builder, By } = require('selenium-webdriver')
 const chrome = require('selenium-webdriver/chrome')
+const proxy = require('selenium-webdriver/proxy')
 
 const lib = require('../lib')
 
@@ -10,7 +10,13 @@ describe('twitter selenium chrome', () => {
   let driver
   before(async () => {
     const options = new chrome.Options()
+    options.setProxy(proxy.socks('192.168.1.100:1082', 5))
     driver = await new Builder().setChromeOptions(options).forBrowser('chrome').build()
+  })
+
+  afterEach(async () => {
+    await lib.sleep(3000)
+    await driver.quit()
   })
 
   it.skip('open browser', async () => {
@@ -18,12 +24,9 @@ describe('twitter selenium chrome', () => {
 
     const res = await driver.getTitle()
     console.log(`title - ${res}`)
-
-    await lib.sleep(3000)
-    await driver.quit()
   })
 
-  it('find element', async () => {
+  it.skip('find element', async () => {
     await driver.get('https://www.bing.com')
 
     const searchBox = await driver.findElement(By.id('sb_form_q'))
@@ -34,8 +37,12 @@ describe('twitter selenium chrome', () => {
     expect(value).to.be.equal('Selenium')
 
     await searchButton.click()
+  })
 
-    await lib.sleep(3000)
-    await driver.quit()
+  it('proxy', async () => {
+    await driver.get('https://www.google.com')
+
+    const res = await driver.getCurrentUrl()
+    console.log(`url - ${res}`)
   })
 })
