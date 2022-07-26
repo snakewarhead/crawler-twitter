@@ -11,7 +11,7 @@ describe('twitter selenium chrome', () => {
   before(async () => {
     const options = new chrome.Options()
     options.setProxy(proxy.socks('192.168.1.100:1082', 5))
-    driver = await new Builder().setChromeOptions(options).forBrowser('chrome').build()
+    driver = await new Builder().usingServer('http://192.168.1.105:4444').forBrowser('chrome').setChromeOptions(options).build()
   })
 
   afterEach(async () => {
@@ -40,9 +40,12 @@ describe('twitter selenium chrome', () => {
   })
 
   it('proxy', async () => {
-    await driver.get('https://www.google.com')
+    await driver.get('https://twitter.com/bitfish1')
 
     const res = await driver.getCurrentUrl()
     console.log(`url - ${res}`)
+
+    const e = await driver.findElement(By.xpath('//*[@id="id__623jzat6lkc"]/span'))
+    console.log(`content - ${await e.getText()}`)
   })
 })
