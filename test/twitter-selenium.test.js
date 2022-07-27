@@ -11,12 +11,16 @@ describe('twitter selenium chrome', () => {
   before(async () => {
     const options = new chrome.Options()
     options.setProxy(proxy.socks('192.168.1.100:1082', 5))
+    options.setPageLoadStrategy('eager')
+    options.headless()
     driver = await new Builder().usingServer('http://192.168.1.105:4444').forBrowser('chrome').setChromeOptions(options).build()
+
+    console.log(driver)
   })
 
   afterEach(async () => {
     await lib.sleep(3000)
-    await driver.quit()
+    // await driver.quit()
   })
 
   it.skip('open browser', async () => {
@@ -45,7 +49,8 @@ describe('twitter selenium chrome', () => {
     const res = await driver.getCurrentUrl()
     console.log(`url - ${res}`)
 
-    const e = await driver.findElement(By.xpath('//*[@id="id__623jzat6lkc"]/span'))
+    // const e = await driver.findElement(By.xpath('//*[@id="id__623jzat6lkc"]/span'))
+    const e = await driver.findElement(By.xpath('/html'))
     console.log(`content - ${await e.getText()}`)
   })
 })
