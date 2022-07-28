@@ -1,6 +1,6 @@
 const { expect } = require('chai')
 
-const { Builder, By } = require('selenium-webdriver')
+const { Builder, until, By } = require('selenium-webdriver')
 const chrome = require('selenium-webdriver/chrome')
 const proxy = require('selenium-webdriver/proxy')
 
@@ -20,7 +20,7 @@ describe('twitter selenium chrome', () => {
 
   afterEach(async () => {
     await lib.sleep(3000)
-    // await driver.quit()
+    await driver.quit()
   })
 
   it.skip('open browser', async () => {
@@ -49,8 +49,7 @@ describe('twitter selenium chrome', () => {
     const res = await driver.getCurrentUrl()
     console.log(`url - ${res}`)
 
-    // const e = await driver.findElement(By.xpath('//*[@id="id__623jzat6lkc"]/span'))
-    const e = await driver.findElement(By.xpath('/html'))
+    const e = await driver.wait(until.elementLocated(By.xpath('//*[@id="id__623jzat6lkc"]/span')), 2 * 60 * 1000, 'not found')
     console.log(`content - ${await e.getText()}`)
   })
 })
