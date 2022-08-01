@@ -12,13 +12,13 @@ describe('twitter selenium chrome', () => {
     const options = new chrome.Options()
     options.setProxy(proxy.socks('192.168.1.100:1082', 5))
     options.setPageLoadStrategy('eager')
-    options.headless()
+    // options.headless()
     driver = await new Builder().usingServer('http://192.168.1.105:4444').forBrowser('chrome').setChromeOptions(options).build()
 
-    console.log(driver)
+    console.log('driver inited - ', await driver.getSession())
   })
 
-  afterEach(async () => {
+  after(async () => {
     await lib.sleep(3000)
     await driver.quit()
   })
@@ -43,13 +43,35 @@ describe('twitter selenium chrome', () => {
     await searchButton.click()
   })
 
+  it.skip('Rect', async () => {
+    await driver.get('https://www.bing.com')
+
+    const res = await driver.getCurrentUrl()
+    console.log(`url - ${res}`)
+
+    const r = await driver.manage().window().getRect()
+    console.log('rect', r)
+  })
+
   it('proxy', async () => {
     await driver.get('https://twitter.com/bitfish1')
 
     const res = await driver.getCurrentUrl()
     console.log(`url - ${res}`)
 
-    const e = await driver.wait(until.elementLocated(By.xpath('//*[@id="id__623jzat6lkc"]/span')), 2 * 60 * 1000, 'not found')
-    console.log(`content - ${await e.getText()}`)
+    const a = await driver.wait(until.elementLocated(By.xpath('//article')), 1 * 60 * 1000, 'not found')
+    console.log(`a - ${a}`)
+    if (!a) {
+      return
+    }
+
+    const as = await driver.findElements(By.xpath('//article'))
+    console.log(`as - ${as.length}`)
+
+    for (let a of as) {
+      const ais = await a.findElements(By.css('span'))
+      console.log(`ais - ${ais.length}`)
+      ais.forEach(async (i) => console.log(await i.getText()))
+    }
   })
 })
