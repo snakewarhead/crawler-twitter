@@ -59,13 +59,13 @@ describe('twitter selenium chrome', () => {
     const res = await driver.getCurrentUrl()
     console.log(`url - ${res}`)
 
-    const a = await driver.wait(until.elementLocated(By.xpath('//article')), 1 * 60 * 1000, 'not found')
+    const a = await driver.wait(until.elementLocated(By.css('article')), 1 * 60 * 1000, 'not found')
     console.log(`a - ${a}`)
     if (!a) {
       return
     }
 
-    const as = await driver.findElements(By.xpath('//article'))
+    const as = await driver.findElements(By.css('article'))
     console.log(`as - ${as.length}`)
 
     for (let a of as) {
