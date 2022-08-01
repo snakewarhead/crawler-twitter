@@ -65,13 +65,42 @@ describe('twitter selenium chrome', () => {
       return
     }
 
-    const as = await driver.findElements(By.css('article'))
+    const as = await driver.findElements(By.css('article > div > div > div'))
     console.log(`as - ${as.length}`)
 
+    const contents = []
     for (let a of as) {
-      const ais = await a.findElements(By.css('span'))
-      console.log(`ais - ${ais.length}`)
-      ais.forEach(async (i) => console.log(await i.getText()))
+      console.log('-------------')
+      const ais = await a.findElements(By.css('div:nth-child(n)'))
+      const ct = {}
+
+      ct.state = ''
+      const ai0 = await ais[0].findElement(By.css('span'))
+      if (ai0) {
+        const ait = await ai0.getText()
+        ct.state = ait
+        console.log(`0 - ${ait}`)
+      }
+
+      ct.time = ''
+      const ai10 = await ais[1].findElement(By.css('time'))
+      if (ai10) {
+        const ait = await ai10.getText()
+        ct.time = ait
+        console.log(`10 - ${ait}`)
+      }
+
+      ct.info = ''
+      const ai11 = await ais[1].findElement(By.css('div:nth-child(2) > div:nth-child(2) > div:nth-child(1) span'))
+      if (ai11) {
+        const ait = await ai11.getText()
+        ct.info = ait
+        console.log(`11 - ${ait}`)
+      }
+
+      contents.push(ct)
     }
+
+    console.log(contents)
   })
 })
