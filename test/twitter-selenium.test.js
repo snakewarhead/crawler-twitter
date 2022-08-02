@@ -1,6 +1,6 @@
 const { expect } = require('chai')
 
-const { Builder, until, By } = require('selenium-webdriver')
+const { Builder, until, By, Key } = require('selenium-webdriver')
 const chrome = require('selenium-webdriver/chrome')
 const proxy = require('selenium-webdriver/proxy')
 
@@ -54,7 +54,7 @@ describe('twitter selenium chrome', () => {
   })
 
   it('proxy', async () => {
-    await driver.get('https://twitter.com/bitfish1')
+    await driver.get('https://twitter.com/Jiangzhuoer2')
 
     const res = await driver.getCurrentUrl()
     console.log(`url - ${res}`)
@@ -65,17 +65,19 @@ describe('twitter selenium chrome', () => {
       return
     }
 
+    await driver.actions().keyDown(Key.PAGE_DOWN).perform()
+    await lib.sleep(2 * 1000)
+
     const as = await driver.findElements(By.css('article > div > div > div'))
     console.log(`as - ${as.length}`)
 
     const contents = []
     for (let a of as) {
       console.log('-------------')
-      const ais = await a.findElements(By.css('div:nth-child(n)'))
       const ct = {}
 
       ct.state = ''
-      const ai0 = await ais[0].findElement(By.css('span'))
+      const ai0 = await a.findElement(By.css('div:nth-child(1) span'))
       if (ai0) {
         const ait = await ai0.getText()
         ct.state = ait
@@ -83,7 +85,7 @@ describe('twitter selenium chrome', () => {
       }
 
       ct.time = ''
-      const ai10 = await ais[1].findElement(By.css('time'))
+      const ai10 = await a.findElement(By.css('div:nth-child(2) time'))
       if (ai10) {
         const ait = await ai10.getText()
         ct.time = ait
@@ -91,16 +93,16 @@ describe('twitter selenium chrome', () => {
       }
 
       ct.info = ''
-      const ai11 = await ais[1].findElement(By.css('div:nth-child(2) > div:nth-child(2) > div:nth-child(1) span'))
-      if (ai11) {
-        const ait = await ai11.getText()
-        ct.info = ait
-        console.log(`11 - ${ait}`)
+      const ai11s = await a.findElements(By.css('div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) span'))
+      if (ai11s || ai11s.length > 0) {
+        ai11s.forEach(async (i) => (ct.info += await i.getText()))
+        console.log(`11 - ${ct.info}`)
       }
 
       contents.push(ct)
     }
 
+    console.log('-------------')
     console.log(contents)
   })
 })
