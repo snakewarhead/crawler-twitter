@@ -66,10 +66,10 @@ describe('twitter selenium chrome', () => {
     }
 
     await driver.actions().keyDown(Key.PAGE_DOWN).perform()
-    await lib.sleep(2 * 1000)
+    await lib.sleep(5 * 1000)
 
     const as = await driver.findElements(By.css('article > div > div > div'))
-    console.log(`as - ${as.length}`)
+    console.log(`articles - ${as.length}`)
 
     const contents = []
     for (let a of as) {
@@ -87,15 +87,18 @@ describe('twitter selenium chrome', () => {
       ct.time = ''
       const ai10 = await a.findElement(By.css('div:nth-child(2) time'))
       if (ai10) {
-        const ait = await ai10.getText()
+        const ait = await ai10.getAttribute('datetime')
+        const aitstr = await ai10.getText()
         ct.time = ait
-        console.log(`10 - ${ait}`)
+        console.log(`10 - ${ait} - ${aitstr}`)
       }
 
       ct.info = ''
       const ai11s = await a.findElements(By.css('div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) span'))
       if (ai11s || ai11s.length > 0) {
-        ai11s.forEach(async (i) => (ct.info += await i.getText()))
+        for (let i = 0; i < ai11s.length; ++i) {
+          ct.info += await ai11s[i].getText()
+        }
         console.log(`11 - ${ct.info}`)
       }
 
