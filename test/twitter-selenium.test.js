@@ -1,3 +1,4 @@
+require('dotenv').config()
 const { expect } = require('chai')
 
 const { Builder, until, By, Key } = require('selenium-webdriver')
@@ -5,17 +6,12 @@ const chrome = require('selenium-webdriver/chrome')
 const proxy = require('selenium-webdriver/proxy')
 
 const lib = require('../lib')
+const selenium = require('../lib/selenium')
 
 describe('twitter selenium chrome', () => {
   let driver
   before(async () => {
-    const options = new chrome.Options()
-    options.setProxy(proxy.socks('192.168.1.100:1082', 5))
-    options.setPageLoadStrategy('eager')
-    // options.headless()
-    driver = await new Builder().usingServer('http://192.168.1.105:4444').forBrowser('chrome').setChromeOptions(options).build()
-
-    console.log('driver inited - ', await driver.getSession())
+    driver = await selenium.init(process.env.SERVER, process.env.PROXY, 'eager', false)
   })
 
   after(async () => {
