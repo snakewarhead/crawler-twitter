@@ -95,7 +95,7 @@ const action = async (name) => {
     const ct = contents[i]
     const exist = await dbTweet.exist(ct.user, ct.state, ct.publishTime)
     if (exist) {
-      break
+      continue
     }
     notice.msg += `${ct.publishTime} - ${ct.content.substring(0, LENGHT_TRIM)} || `
   }
