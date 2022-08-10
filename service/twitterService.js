@@ -11,8 +11,8 @@ const DEBUG = process.env.DEBUG
 
 let driver
 
-const init = async () => {
-  driver = await selenium.init(process.env.SERVER, process.env.PROXY, 'eager', true)
+const init = async (headless = true) => {
+  driver = await selenium.init(process.env.SERVER, process.env.PROXY, 'eager', headless)
   return driver
 }
 
@@ -24,10 +24,10 @@ const close = async () => {
   await driver.quit()
 }
 
-const crawl = async (name) => {
+const crawl = async (name, headless = true) => {
   console.log(`crawl - ${name}`)
 
-  await init()
+  await init(headless)
   try {
     await driver.get(URL + name)
 
@@ -112,5 +112,6 @@ const action = async (name) => {
 module.exports = {
   init,
   close,
+  crawl,
   action,
 }
