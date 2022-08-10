@@ -17,6 +17,9 @@ const init = async () => {
 }
 
 const close = async () => {
+  if (!driver) {
+    return
+  }
   await driver.sleep(3000)
   await driver.quit()
 }
@@ -24,58 +27,65 @@ const close = async () => {
 const crawl = async (name) => {
   console.log(`crawl - ${name}`)
 
-  await driver.get(URL + name)
+  await init()
+  try {
+    await driver.get(URL + name)
 
-  const a = await driver.wait(until.elementLocated(By.css('article')), 1 * 60 * 1000, 'not found')
-  DEBUG && console.log(`a - ${a}`)
-  if (!a) {
-    return
-  }
-
-  await driver.actions().keyDown(Key.PAGE_DOWN).perform()
-  await driver.sleep(5 * 1000)
-
-  const as = await driver.findElements(By.css('article > div > div > div'))
-  DEBUG && console.log(`articles - ${as.length}`)
-
-  const contents = []
-  for (let a of as) {
-    DEBUG && console.log('-------------')
-    const ct = { user: name }
-
-    ct.state = 0
-    const ai0 = await a.findElement(By.css('div:nth-child(1) span'))
-    if (ai0) {
-      const ait = await ai0.getText()
-      ct.state = ait === '置顶推文' ? 1 : 0
-      DEBUG && console.log(`0 - ${ait}`)
+    const a = await driver.wait(until.elementLocated(By.css('article')), 1 * 60 * 1000, 'not found')
+    DEBUG && console.log(`a - ${a}`)
+    if (!a) {
+      return
     }
 
-    ct.publishTime = ''
-    const ai10 = await a.findElement(By.css('div:nth-child(2) time'))
-    if (ai10) {
-      const ait = await ai10.getAttribute('datetime')
-      const aitstr = await ai10.getText()
-      ct.publishTime = ait
-      DEBUG && console.log(`10 - ${ait} - ${aitstr}`)
-    }
+    await driver.actions().keyDown(Key.PAGE_DOWN).perform()
+    await driver.sleep(5 * 1000)
 
-    ct.content = ''
-    const ai11s = await a.findElements(By.css('div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) span'))
-    if (ai11s || ai11s.length > 0) {
-      for (let i = 0; i < ai11s.length; ++i) {
-        ct.content += await ai11s[i].getText()
+    const as = await driver.findElements(By.css('article > div > div > div'))
+    DEBUG && console.log(`articles - ${as.length}`)
+
+    const contents = []
+    for (let a of as) {
+      DEBUG && console.log('-------------')
+      const ct = { user: name }
+
+      ct.state = 0
+      const ai0 = await a.findElement(By.css('div:nth-child(1) span'))
+      if (ai0) {
+        const ait = await ai0.getText()
+        ct.state = ait === '置顶推文' ? 1 : 0
+        DEBUG && console.log(`0 - ${ait}`)
       }
-      DEBUG && console.log(`11 - ${ct.content}`)
+
+      ct.publishTime = ''
+      const ai10 = await a.findElement(By.css('div:nth-child(2) time'))
+      if (ai10) {
+        const ait = await ai10.getAttribute('datetime')
+        const aitstr = await ai10.getText()
+        ct.publishTime = ait
+        DEBUG && console.log(`10 - ${ait} - ${aitstr}`)
+      }
+
+      ct.content = ''
+      const ai11s = await a.findElements(By.css('div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) span'))
+      if (ai11s || ai11s.length > 0) {
+        for (let i = 0; i < ai11s.length; ++i) {
+          ct.content += await ai11s[i].getText()
+        }
+        DEBUG && console.log(`11 - ${ct.content}`)
+      }
+
+      contents.push(ct)
     }
 
-    contents.push(ct)
+    DEBUG && console.log('-------------')
+    DEBUG && console.log(contents)
+
+    return contents
+  } catch (e) {
+    console.error(`${name} - ${e}`)
+  } finally {
+    await close()
   }
-
-  DEBUG && console.log('-------------')
-  DEBUG && console.log(contents)
-
-  return contents
 }
 
 const action = async (name) => {

@@ -5,11 +5,11 @@ const service = require('../service/twitterService')
 
 describe('twitter service', () => {
   before(async () => {
-    await service.init()
+    // await service.init()
   })
 
   after(async () => {
-    await service.close()
+    // await service.close()
   })
 
   it('action', async () => {

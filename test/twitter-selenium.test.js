@@ -67,4 +67,17 @@ describe('selenium chrome', () => {
     const r = await driver.manage().window().getRect()
     console.log('rect', r)
   })
+
+  it('session', async () => {
+    let res
+
+    const fn = async (url) => {
+      await driver.get(url)
+      await driver.sleep(3000)
+      res = await driver.getCurrentUrl()
+      console.log(`url - ${res}`)
+    }
+
+    await Promise.all([fn('https://www.bing.com'), fn('https://www.baidu.com/')])
+  })
 })
