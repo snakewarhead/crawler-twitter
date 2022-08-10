@@ -1,8 +1,12 @@
 require('dotenv').config()
 const { until, By, Key } = require('selenium-webdriver')
+
 const selenium = require('../lib/selenium')
+const emailSend = require('../lib/emailSend')
+const dbTweet = require('../db/dbTweet')
 
 const URL = 'https://twitter.com/'
+const LENGHT_TRIM = 20
 const DEBUG = process.env.DEBUG
 
 let driver
@@ -17,11 +21,10 @@ const close = async () => {
   await driver.quit()
 }
 
-const action = async (name) => {
-  await driver.get(URL + name)
+const crawl = async (name) => {
+  console.log(`crawl - ${name}`)
 
-  const res = await driver.getCurrentUrl()
-  console.log(`url - ${res}`)
+  await driver.get(URL + name)
 
   const a = await driver.wait(until.elementLocated(By.css('article')), 1 * 60 * 1000, 'not found')
   DEBUG && console.log(`a - ${a}`)
@@ -40,30 +43,30 @@ const action = async (name) => {
     DEBUG && console.log('-------------')
     const ct = { user: name }
 
-    ct.state = ''
+    ct.state = 0
     const ai0 = await a.findElement(By.css('div:nth-child(1) span'))
     if (ai0) {
       const ait = await ai0.getText()
-      ct.state = ait
+      ct.state = ait === '置顶推文' ? 1 : 0
       DEBUG && console.log(`0 - ${ait}`)
     }
 
-    ct.time = ''
+    ct.publishTime = ''
     const ai10 = await a.findElement(By.css('div:nth-child(2) time'))
     if (ai10) {
       const ait = await ai10.getAttribute('datetime')
       const aitstr = await ai10.getText()
-      ct.time = ait
+      ct.publishTime = ait
       DEBUG && console.log(`10 - ${ait} - ${aitstr}`)
     }
 
-    ct.info = ''
+    ct.content = ''
     const ai11s = await a.findElements(By.css('div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) span'))
     if (ai11s || ai11s.length > 0) {
       for (let i = 0; i < ai11s.length; ++i) {
-        ct.info += await ai11s[i].getText()
+        ct.content += await ai11s[i].getText()
       }
-      DEBUG && console.log(`11 - ${ct.info}`)
+      DEBUG && console.log(`11 - ${ct.content}`)
     }
 
     contents.push(ct)
@@ -73,6 +76,27 @@ const action = async (name) => {
   DEBUG && console.log(contents)
 
   return contents
+}
+
+const action = async (name) => {
+  const notice = { name, msg: '' }
+  const contents = await crawl(name)
+  for (let i = 0; i < contents.length; ++i) {
+    const ct = contents[i]
+    const exist = await dbTweet.exist(ct.user, ct.state, ct.publishTime)
+    if (exist) {
+      break
+    }
+    notice.msg += `${ct.publishTime} - ${ct.content.substring(0, LENGHT_TRIM)} || `
+  }
+  if (!notice.msg) {
+    console.log('twitterService action not news')
+    return
+  }
+  await dbTweet.update(contents)
+
+  DEBUG && console.log(`send - ${notice}`)
+  await emailSend.send(notice.name, notice.msg)
 }
 
 module.exports = {
