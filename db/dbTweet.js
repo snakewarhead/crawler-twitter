@@ -1,4 +1,5 @@
 const db = require('./index')
+const { timeNow } = require('../lib')
 
 const coll = 'tweet'
 
@@ -22,10 +23,14 @@ const count = async (filter) => {
   return await db.countDocuments(coll, filter)
 }
 
+const exist = async (user, state, publishTime) => {
+  return await db.findOne(coll, { user, state, publishTime })
+}
+
 const update = async (tweets) => {
   const opers = []
   tweets.forEach((i) => {
-    i.updateTime = new Date().toISOString()
+    i.updateTime = timeNow()
     const o = {
       updateOne: {
         filter: { user: i.user, publishTime: i.publishTime },
@@ -45,5 +50,6 @@ const update = async (tweets) => {
 module.exports = {
   find,
   count,
+  exist,
   update,
 }

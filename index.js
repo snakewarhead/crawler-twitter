@@ -1,11 +1,8 @@
 require('dotenv').config()
-const selenium = require('./lib/selenium')
-
-const URL = 'https://twitter.com/'
-const INTERVAL = 1 * 60 * 60 * 1000
+const service = require('./service/twitterService')
 
 const main = async () => {
-  await selenium.init(process.env.SERVER, process.env.PROXY, 'eager', true)
+  await service.init()
 
   const fn = () => {
     const ts = process.env.TWITTERS.split(',')
@@ -14,7 +11,7 @@ const main = async () => {
     }
     return fn
   }
-  setInterval(fn(), INTERVAL)
+  setInterval(fn(), process.env.LOOP_WAIT)
 }
 
 main().catch(console.error)
