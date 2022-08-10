@@ -100,12 +100,12 @@ const action = async (name) => {
     notice.msg += `${ct.publishTime} - ${ct.content.substring(0, LENGHT_TRIM)} || `
   }
   if (!notice.msg) {
-    console.log('twitterService action not news')
+    console.log(`twitterService action not news - ${name}`)
     return
   }
   await dbTweet.update(contents)
 
-  DEBUG && console.log(`send - ${notice}`)
+  DEBUG && console.log(`send - ${notice.name} - ${notice.msg}`)
   await emailSend.send(notice.name, notice.msg)
 }
 
