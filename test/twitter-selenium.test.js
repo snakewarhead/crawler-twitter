@@ -37,6 +37,27 @@ describe('twitter selenium chrome', () => {
     expect(value).to.be.equal('Selenium')
 
     await searchButton.click()
+
+    await lib.sleep(2000)
+
+    const a1 = await driver.findElement(By.css('#b-scopeListItem-images > a'))
+    const a1a = await a1.getAttribute('href')
+    const a1p = await a1.getProperty('href')
+    console.log(a1a, '-', a1p)
+  })
+
+  it.skip('tag time', async () => {
+    await driver.get('https://www.w3schools.com/tags/tryit.asp?filename=tryhtml5_time')
+
+    const btn = await driver.findElement(By.id('runbtn'))
+    await btn.click()
+
+    await driver.sleep(2000)
+
+    await driver.switchTo().frame('iframeResult')
+    const t = await driver.findElement(By.css('body > p:nth-child(3) > time:nth-child(1)'))
+    const td = await t.getAttribute('datetime')
+    console.log(td)
   })
 
   it.skip('Rect', async () => {
