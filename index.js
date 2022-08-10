@@ -1,7 +1,10 @@
 require('dotenv').config()
+const db = require('./db')
 const service = require('./service/twitterService')
 
 const main = async () => {
+  await db.connect()
+
   const fn = () => {
     const actions = []
     const ts = process.env.TWITTERS.split(',')

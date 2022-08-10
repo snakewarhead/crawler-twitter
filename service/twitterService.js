@@ -52,7 +52,7 @@ const crawl = async (name) => {
       const ai0 = await a.findElement(By.css('div:nth-child(1) span'))
       if (ai0) {
         const ait = await ai0.getText()
-        ct.state = ait === '置顶推文' ? 1 : 0
+        ct.state = ait === '置顶推文' || ait === 'Pinned Tweet' ? 1 : 0
         DEBUG && console.log(`0 - ${ait}`)
       }
 
