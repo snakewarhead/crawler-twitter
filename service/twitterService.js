@@ -6,7 +6,7 @@ const emailSend = require('../lib/emailSend')
 const dbTweet = require('../db/dbTweet')
 
 const URL = 'https://twitter.com/'
-const LENGHT_TRIM = 20
+const LENGHT_TRIM = 100
 const DEBUG = process.env.DEBUG
 
 let driver
