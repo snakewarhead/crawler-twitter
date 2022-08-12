@@ -13,7 +13,9 @@ const main = async () => {
     for (const t of ts) {
       actions.push(service.action(t))
     }
-    Promise.all(actions).then(() => console.log('looping end ---------'))
+    Promise.all(actions)
+      .then(() => console.log('looping end ---------'))
+      .catch((e) => console.error(`looping end error - ${new Date()} - ${e}`))
 
     return fn
   }
