@@ -6,12 +6,14 @@ const main = async () => {
   await db.connect()
 
   const fn = () => {
+    console.log(`looping ${new Date()} ---------`)
+
     const actions = []
     const ts = process.env.TWITTERS.split(',')
     for (const t of ts) {
       actions.push(service.action(t))
     }
-    Promise.all(actions).then(() => console.log('looping end---------'))
+    Promise.all(actions).then(() => console.log('looping end ---------'))
 
     return fn
   }

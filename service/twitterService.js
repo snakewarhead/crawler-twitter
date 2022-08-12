@@ -6,6 +6,7 @@ const emailSend = require('../lib/emailSend')
 const dbTweet = require('../db/dbTweet')
 
 const URL = 'https://twitter.com/'
+const TIMEOUT_WAIT_ARTICLE = 30 * 1000
 const LENGHT_TRIM = 100
 const DEBUG = process.env.DEBUG
 
@@ -25,13 +26,15 @@ const close = async () => {
 }
 
 const crawl = async (name, headless = true) => {
-  console.log(`crawl - ${name}`)
+  console.log(`crawl - ${name} - ${new Date()}`)
 
   await init(headless)
+
+  const contents = []
   try {
     await driver.get(URL + name)
 
-    const a = await driver.wait(until.elementLocated(By.css('article')), 1 * 60 * 1000, 'not found')
+    const a = await driver.wait(until.elementLocated(By.css('article')), TIMEOUT_WAIT_ARTICLE, 'not found')
     DEBUG && console.log(`a - ${a}`)
     if (!a) {
       return
@@ -43,7 +46,6 @@ const crawl = async (name, headless = true) => {
     const as = await driver.findElements(By.css('article > div > div > div'))
     DEBUG && console.log(`articles - ${as.length}`)
 
-    const contents = []
     for (let a of as) {
       DEBUG && console.log('-------------')
       const ct = { user: name }
@@ -76,21 +78,25 @@ const crawl = async (name, headless = true) => {
 
       contents.push(ct)
     }
-
-    DEBUG && console.log('-------------')
-    DEBUG && console.log(contents)
-
-    return contents
   } catch (e) {
     console.error(`${name} - ${e}`)
   } finally {
     await close()
   }
+
+  DEBUG && console.log('-------------')
+  DEBUG && console.log(contents)
+
+  return contents
 }
 
 const action = async (name) => {
   const notice = { name, msg: '' }
   const contents = await crawl(name)
+  if (!contents?.length) {
+    return
+  }
+
   for (let i = 0; i < contents.length; ++i) {
     const ct = contents[i]
     const exist = await dbTweet.exist(ct.user, ct.state, ct.publishTime)
