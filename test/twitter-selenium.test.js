@@ -68,7 +68,7 @@ describe('selenium chrome', () => {
     console.log('rect', r)
   })
 
-  it('session', async () => {
+  it.skip('session', async () => {
     let res
 
     const fn = async (url) => {
@@ -79,5 +79,16 @@ describe('selenium chrome', () => {
     }
 
     await Promise.all([fn('https://www.bing.com'), fn('https://www.baidu.com/')])
+  })
+
+  it('proxy', async () => {
+    await driver.get('https://www.google.com/')
+
+    // const tagInput = await driver.findElement(By.css('.gLFyf'))
+    // await tagInput.sendKeys('aaabbb')
+
+    // const tagBtn = await driver.findElement(By.css('.CqAVzb > center:nth-child(2) > input:nth-child(1)'))
+    const tagBtn = await driver.findElement(By.css('.FPdoLc > center:nth-child(1) > input:nth-child(2)'))
+    await tagBtn.click()
   })
 })
