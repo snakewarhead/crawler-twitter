@@ -10,8 +10,8 @@ const TIMEOUT_WAIT_ARTICLE = 30 * 1000
 const LENGHT_TRIM = 100
 const DEBUG = process.env.DEBUG
 
-const init = async (headless = true) => {
-  const driver = await selenium.init(process.env.SERVER, process.env.PROXY, 'eager', headless)
+const init = async () => {
+  const driver = await selenium.init(process.env.SERVER, process.env.PROXY, 'eager', eval(process.env.HEADLESS))
   return driver
 }
 
@@ -23,10 +23,10 @@ const close = async (driver) => {
   await driver.quit()
 }
 
-const crawl = async (name, headless = true) => {
+const crawl = async (name) => {
   console.log(`crawl - ${name} - ${new Date()}`)
 
-  const driver = await init(headless)
+  const driver = await init()
 
   const contents = []
   try {

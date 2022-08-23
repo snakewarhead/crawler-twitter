@@ -5,6 +5,6 @@ const service = require('../service/twitterService')
 
 describe('twitter service', () => {
   it('action', async () => {
-    await service.crawl('bagetanbi1', false)
+    await service.crawl('bagetanbi1')
   })
 })
