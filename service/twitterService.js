@@ -32,11 +32,19 @@ const crawl = async (name) => {
   try {
     await driver.get(URL + name)
 
+    // await driver.executeScript('console.log(navigator.userAgent)')
+    // console.log('navigator-----')
+
+    // const shot = await driver.takeScreenshot()
+    // require('fs').writeFileSync('out.png', shot, 'base64', function (err) {
+    //   console.log('screenshoted')
+    // })
+
     const a = await driver.wait(until.elementLocated(By.css('article')), TIMEOUT_WAIT_ARTICLE, 'not found')
-    DEBUG && console.log(`a - ${a}`)
     if (!a) {
       return
     }
+    DEBUG && console.log(`page loaded`)
 
     await driver.actions().keyDown(Key.PAGE_DOWN).perform()
     await driver.sleep(5 * 1000)

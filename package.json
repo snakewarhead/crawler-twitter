@@ -9,6 +9,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@types/selenium-webdriver": "^4.1.2",
     "axios": "^0.27.2",
     "dotenv": "^16.0.1",
     "mongodb": "^4.8.1",
