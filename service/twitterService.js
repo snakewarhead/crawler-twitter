@@ -49,7 +49,7 @@ const crawl = async (name) => {
     await driver.actions().keyDown(Key.PAGE_DOWN).perform()
     await driver.sleep(5 * 1000)
 
-    const as = await driver.findElements(By.css('article > div > div > div'))
+    const as = await driver.findElements(By.css('article > div > div'))
     DEBUG && console.log(`articles - ${as.length}`)
 
     for (let a of as) {
