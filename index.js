@@ -4,6 +4,7 @@ const service = require('./service/twitterService')
 
 const main = async () => {
   await db.connect()
+  await service.init()
 
   const fn = () => {
     console.log(`looping ${new Date()} ---------`)

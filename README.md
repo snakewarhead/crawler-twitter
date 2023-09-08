@@ -2,6 +2,10 @@
 
 ## selenium
 
+### cookies
+
+export cookies from the extension called 'Cookie Quick Manager' of firefox
+
 ### selenium grid
 
 ```cmd

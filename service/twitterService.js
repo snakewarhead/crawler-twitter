@@ -1,16 +1,26 @@
 require('dotenv').config()
 const { until, By, Key } = require('selenium-webdriver')
+const fs = require('node:fs/promises')
 
 const selenium = require('../lib/selenium')
 const emailSend = require('../lib/emailSend')
 const dbTweet = require('../db/dbTweet')
 
-const URL = 'https://twitter.com/'
+const DOMAIN = 'twitter.com'
+const URL = `https://${DOMAIN}/`
 const TIMEOUT_WAIT_ARTICLE = 30 * 1000
 const LENGHT_TRIM = 100
 const DEBUG = process.env.DEBUG
 
+let cookies
+
 const init = async () => {
+  // load cookies
+  const ct = await fs.readFile('./service/res/cookies.json')
+  cookies = JSON.parse(ct)
+}
+
+const open = async () => {
   const driver = await selenium.init(process.env.SERVER, process.env.PROXY, 'eager', eval(process.env.HEADLESS))
   return driver
 }
@@ -23,10 +33,19 @@ const close = async (driver) => {
   await driver.quit()
 }
 
+const prepare = async (driver) => {
+  for (const c of cookies) {
+    await driver.manage().addCookie({ name: c['Name raw'], value: c['Content raw'], domain: DOMAIN })
+  }
+  const ccc = await driver.manage().getCookies()
+  console.log(ccc)
+}
+
 const crawl = async (name) => {
   console.log(`crawl - ${name} - ${new Date()}`)
 
-  const driver = await init()
+  const driver = await open()
+  await prepare(driver)
 
   const contents = []
   try {
@@ -123,7 +142,6 @@ const action = async (name) => {
 
 module.exports = {
   init,
-  close,
   crawl,
   action,
 }

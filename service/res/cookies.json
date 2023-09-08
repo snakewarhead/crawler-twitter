@@ -1,0 +1,32 @@
+[{
+	"Host raw": "http://twitter.com/",
+	"Name raw": "g_state",
+	"Path raw": "/",
+	"Content raw": "{\"i_p\":1692101651595,\"i_l\":1}",
+	"Expires": "11-02-2024 18:14:11",
+	"Expires raw": "1707646451",
+	"Send for": "Any type of connection",
+	"Send for raw": "false",
+	"HTTP only raw": "false",
+	"SameSite raw": "no_restriction",
+	"This domain only": "Valid for host only",
+	"This domain only raw": "true",
+	"Store raw": "firefox-default",
+	"First Party Domain": ""
+},
+{
+	"Host raw": "http://twitter.com/",
+	"Name raw": "lang",
+	"Path raw": "/",
+	"Content raw": "en",
+	"Expires": "At the end of the session",
+	"Expires raw": "0",
+	"Send for": "Any type of connection",
+	"Send for raw": "false",
+	"HTTP only raw": "false",
+	"SameSite raw": "no_restriction",
+	"This domain only": "Valid for host only",
+	"This domain only raw": "true",
+	"Store raw": "firefox-default",
+	"First Party Domain": ""
+}]
