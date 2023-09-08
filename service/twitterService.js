@@ -118,7 +118,7 @@ const action = async (name) => {
   await dbTweet.update(contents)
 
   DEBUG && console.log(`send - ${notice.name} - ${notice.msg}`)
-  await emailSend.send(notice.name, notice.msg)
+  await emailSend.send(notice.name, notice.msg, undefined, undefined, { translate: true })
 }
 
 module.exports = {
