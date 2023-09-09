@@ -34,11 +34,10 @@ const close = async (driver) => {
 }
 
 const prepare = async (driver) => {
+  await driver.get(URL)
   for (const c of cookies) {
     await driver.manage().addCookie({ name: c['Name raw'], value: c['Content raw'], domain: DOMAIN })
   }
-  const ccc = await driver.manage().getCookies()
-  console.log(ccc)
 }
 
 const crawl = async (name) => {
