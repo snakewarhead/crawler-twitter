@@ -1,5 +1,13 @@
 # crawler-twitter
 
+## env config
+
+TWITTERS = name0,name1-translation,name2
+
+> name: url path
+>
+> translation: 0 - disable, 1 - enable
+
 ## selenium
 
 ### cookies

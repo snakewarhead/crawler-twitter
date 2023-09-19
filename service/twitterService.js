@@ -114,7 +114,16 @@ const crawl = async (name) => {
   return contents
 }
 
-const action = async (name) => {
+/**
+ * 
+ * @param {*} info - name-translation, e.g. xxxx-1
+ * @returns 
+ */
+const action = async (info) => {
+  const ii = info.split('-')
+  const name = ii[0]
+  const translation = (ii?.[1] ?? '1') === '1'
+
   const notice = { name, msg: '' }
   const contents = await crawl(name)
   if (!contents?.length) {
@@ -136,7 +145,7 @@ const action = async (name) => {
   await dbTweet.update(contents)
 
   DEBUG && console.log(`send - ${notice.name} - ${notice.msg}`)
-  await emailSend.send(notice.name, notice.msg, undefined, undefined, { translate: true })
+  await emailSend.send(notice.name, notice.msg, undefined, undefined, { translate: translation })
 }
 
 module.exports = {

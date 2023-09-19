@@ -9,6 +9,10 @@ describe('twitter service', () => {
   })
 
   it('action', async () => {
-    await service.crawl('federalreserve')
+    const ts = process.env.TWITTERS.split(',')
+    for (const t of ts) {
+      // await service.crawl(t)
+      await service.action(t)
+    }
   })
 })
