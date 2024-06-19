@@ -1,4 +1,5 @@
 require('dotenv').config()
+const url = require('url')
 const { until, By, Key } = require('selenium-webdriver')
 const fs = require('node:fs/promises')
 
@@ -36,7 +37,9 @@ const close = async (driver) => {
 const prepare = async (driver) => {
   await driver.get(URL)
   for (const c of cookies) {
-    await driver.manage().addCookie({ name: c['Name raw'], value: c['Content raw'], domain: DOMAIN })
+    try {
+      await driver.manage().addCookie({ name: c['Name raw'], value: c['Content raw'], domain: new url.URL(c['Host raw']).hostname })
+    } catch (e) {}
   }
 }
 
@@ -115,9 +118,9 @@ const crawl = async (name) => {
 }
 
 /**
- * 
+ *
  * @param {*} info - name-translation, e.g. xxxx-1
- * @returns 
+ * @returns
  */
 const action = async (info) => {
   const ii = info.split('-')
